@@ -1,74 +1,104 @@
-Parallel Palindrome & Path Optimization Suite
 
-This project is a dual-language repository featuring High-Performance C Multiprocessing and Complex Python Algorithmic Solvers. It explores Inter-Process Communication (IPC), shared memory management, and advanced combinatorial optimization.
+# Parallel Palindrome & Path Optimization Suite
 
-Project Components
+This repository contains a hybrid collection of system-level C programs and high-level Python algorithms. It explores the intersection of **Inter-Process Communication (IPC)** and **Combinatorial Optimization**.
 
-1. C Multiprocessing Framework
-   
-A system-level implementation of parallel task delegation.
+## 📁 Project Structure
 
-Manager.c: The parent orchestrator. It creates POSIX shared memory segments, forks child processes, and coordinates task distribution.
+### 1. Multiprocess C Framework
 
-Palindrome.c: The worker process. It attaches to shared memory, performs computational checks, and reports results back to the parent.
+A robust implementation of parallel processing using the parent-worker model.
 
-shared_mem.h: A shared header defining the data contract (shared_mem_t) and POSIX source macros.
+-   **`Manager.c`**: The orchestrator. It manages the lifecycle of child processes, creates POSIX shared memory segments, and handles task distribution.
+    
+-   **`Palindrome.c`**: The worker. It utilizes a two-pointer algorithm to verify palindromes, reading from and writing to shared memory.
+    
+-   **`shared_mem.h`**: The central header file defining the `shared_mem_t` structure and POSIX feature macros.
+    
+-   **`Makefile`**: Automates compilation with high-level `-O3` optimizations.
+    
 
-Makefile: A build script configured with -O3 optimizations and standard warning flags.
+### 2. Python Algorithm Suite
 
-2. Python Algorithm Suite
-   
-Advanced logic for graph theory and optimization problems.
+Complex solvers for graph-based and optimization problems.
 
-Genetic TSP Solver: A Genetic Algorithm (GA) using Partially Mapped Crossover (PMX) and Tournament Selection to solve the Traveling Salesperson Problem.
+-   **Genetic TSP Solver**: Implements a Genetic Algorithm to solve the Traveling Salesperson Problem using **Partially Mapped Crossover (PMX)** and **Elitism**.
+    
+-   **Graph Path Search**: A recursive backtracking DFS that identifies palindromic sequences within edge-weighted graphs.
+    
 
-Graph Path Search: A recursive backtracking DFS designed to find palindromic sequences within edge-weighted graphs.
+----------
 
-Installation & Setup
+## 🚀 Getting Started
 
-Prerequisites
+### Prerequisites
 
-OS: Linux, macOS, or any POSIX-compliant Unix system.
+-   **C Environment**: A Linux/Unix-based system with `gcc` and `make`.
+    
+-   **Python Environment**: Python 3.x installed.
+    
 
-Compiler: gcc
+### Compilation
 
-Python: Version 3.8+
-
-Tools: make
-
-Building the C Framework
-
-To compile the Manager and Palindrome worker, run:
+Build the C components using the provided Makefile:
 
 Bash
+
+```
 make
 
-Execution
+```
 
-Running the Multi-Processed Checker
+### Execution
 
-Pass a list of strings to the Manager. Each string will be processed by a unique child process:
+#### Running the Multi-Processed Checker
+
+Pass a list of strings to the `Manager`. Each string will be processed by a unique child process:
 
 Bash
 
+```
 ./Manager racecar algorithm madam kayak
 
-Running Python Algorithms
+```
 
-Ensure your local environment includes the edgegraph and util modules referenced in the code, then run:
+#### Running Python Algorithms
+
+Ensure your local environment includes the `edgegraph` and `util` modules referenced in the code, then run:
 
 Bash
+
+```
 python3 your_script_name.py
 
-Technical Implementation Details
-IPC Handshake Workflow
+```
+
+----------
+
+## 🛠 Technical Implementation Details
+
+### IPC Handshake Workflow
 
 The C system uses a specialized communication flow:
 
-Shared Memory: The Manager creates a memory segment via shm_open and mmap.
+1.  **Shared Memory**: The Manager creates a memory segment via `shm_open` and `mmap`.
+    
+2.  **The Pipe**: The Manager writes the _name_ of the shared memory segment into a pipe.
+    
+3.  **Exec**: The child process is transformed into the `./Palindrome` executable via `execl`, receiving the pipe's file descriptor as an argument.
+    
+4.  **Reporting**: The child writes the result ($1$ or $0$) back into the shared structure, which the Manager reads after the child exits.
+    
 
-The Pipe: The Manager writes the name of the shared memory segment into a pipe.
 
-Exec: The child process is transformed into the ./Palindrome executable via execl, receiving the pipe's file descriptor as an argument.
 
-Reporting: The child writes the result ($1$ or $0$) back into the shared structure, which the Manager reads after the child exits.
+## 🧹 Maintenance
+
+To remove compiled executables and object files, run:
+
+Bash
+
+```
+make clean
+
+```
